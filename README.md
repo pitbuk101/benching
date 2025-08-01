@@ -8,3 +8,5 @@ generative ai code repo
 2. Update .env file to point to latest configuration
 3. Update config.yaml to point to your latest models 
 4. Run `docker compose up -d` to up the services and test changes.
+# benching
+bench
