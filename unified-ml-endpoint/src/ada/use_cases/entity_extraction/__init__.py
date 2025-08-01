@@ -1,1 +1,0 @@
-"""Entity extraction use case."""

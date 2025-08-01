@@ -1,8 +1,0 @@
----
-global:
-  workspace_name: "aza-ml-f033d33"
-  subscription_id: "5a911952-52ae-4144-b0f4-63293a775c3b"
-  resource_group: "sourceaigenaide-f033d33"
-  msi_client_id: "bdbecb26-5ca4-4f28-a7cb-50d170178a22"
-  sp_client_id: "7018a783-3a9f-4886-b621-305c9ad62934"
-  azure_tenant_id: "b0257c14-cacc-44c6-8927-5b4ce5de0874"

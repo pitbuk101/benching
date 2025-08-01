@@ -1,1 +1,0 @@
-"""Idea generation use case."""
