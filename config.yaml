@@ -1,4 +1,5 @@
 type: llm
+
 provider: openai_llm
 models:
   - model: gpt-4o
