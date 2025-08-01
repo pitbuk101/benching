@@ -1,8 +1,0 @@
----
-global:
-  workspace_name: "aza-ml-444b6e2"
-  subscription_id: "646f34a7-d812-468b-a8b5-ed64d93cd92c"
-  resource_group: "sourceaigenaist-444b6e2"
-  client_id: "5b2dad2e-482b-495c-bd9f-f5ea76a8c94e"
-  sp_client_id: "c0ab4f84-de31-438d-8998-76dee624175d"
-  azure_tenant_id: "b0257c14-cacc-44c6-8927-5b4ce5de0874"
