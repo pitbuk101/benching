@@ -1,0 +1,60 @@
+/* Main container */
+.idp-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #000000; /* black background */
+  width: 100%;
+  height: 100%;
+}
+
+/* KPI Grid */
+.idp-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+/* KPI Title */
+.idp-kpi-title {
+  color: var(--text-gray); /* Gray-600 */
+  font-weight: 500;
+}
+
+/* Charts Container */
+.idp-charts-grid {
+  display: grid;
+  grid-template-columns: 25% 75%; // First column 25%, second column 75%
+  gap: 1rem;
+  background: black;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-light);
+  > * {
+    width: 100%; // Ensures child elements take full width of their respective grid cells
+  }
+}
+
+/* Chart Component */
+.idp-chart-component {
+  border-right: 1px solid lightgray;
+}
+
+/* Opportunities Grid */
+.idp-opportunities-grid {
+  background: black;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr); // First column 25%, second column 75%
+  gap: 1rem; // Adjust spacing between grid items if needed
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-light);
+
+  > * {
+    width: 100%; // Ensures child elements take full width of their respective grid cells
+  }
+}

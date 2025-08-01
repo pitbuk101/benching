@@ -1,0 +1,29 @@
+# For tenant schema
+To create a new migration file
+    `poetry run alembic -c ./src/migrations/tenant_migrations/alembic.ini revision -m"<<JIRA-CARD-NO>>_<<Readable-Description>>"`
+
+To run migrations
+    `poetry run alembic -c ./src/migrations/tenant_migrations/alembic.ini upgrade head`
+
+To merge migrations on a diverged multiple head scenario
+    `poetry run alembic -c ./src/migrations/tenant_migrations/alembic.ini merge <<revison1>> <<revision2>>`
+
+To look at the history
+    `poetry run alembic -c ./src/migrations/tenant_migrations/alembic.ini history`
+
+# For Common schema
+To create a new migration file
+    `poetry run alembic -c ./src/migrations/common_migrations/alembic.ini revision -m"<<JIRA-CARD-NO>>_<<Readable-Description>>"`
+
+To run migrations
+    `poetry run alembic -c ./src/migrations/common_migrations/alembic.ini upgrade head`
+
+To merge migrations on a diverged multiple head scenario
+    `poetry run alembic -c ./src/migrations/common_migrations/alembic.ini merge <<revison1>> <<revision2>>`
+
+To look at the history for common schema
+    `poetry run alembic -c ./src/migrations/common_migrations/alembic.ini history`
+
+
+Further informations also exists in the ADR
+https://mckinsey.atlassian.net/wiki/spaces/OVX9/pages/1002307738/TechCME+Database+Migration+Tool+Selection+-+Orp+GenAI

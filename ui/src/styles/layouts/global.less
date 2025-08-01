@@ -1,0 +1,80 @@
+:root {
+  .make-color-variables();
+  --disabled: @disabled-color;
+
+  /* Background Colors */
+  --background-dark: #121212;
+  --background-light-dark: #1e1e1e;
+  --background-card: #222222;
+  --background-highlight: #2a2a2a;
+
+  /* Primary Colors */
+  --primary-blue: #1666ff;
+  --primary-blue-light: #4a8bff;
+  --primary-blue-dark: #0e4ccc;
+
+  /* Text Colors */
+  --text-light: #ffffff;
+  --text-gray: #b0b0b0;
+  --text-dark-gray: #8c8c8c;
+  --text-highlight: #80b3ff;
+
+  /* Border Colors */
+  --border-light: #2d2d2d;
+  --border-gray: #444444;
+  --border-radius: 8px;
+
+  /* Accent Colors */
+  --accent-purple: #823aff;
+  --accent-cyan: #00d4ff;
+  --accent-green: #3ecf8e;
+  --accent-red: #ff4d4d;
+
+  /* Button Colors */
+  --button-primary: var(--primary-blue);
+  --button-hover: var(--primary-blue-light);
+  --button-active: var(--primary-blue-dark);
+
+  /* Chart Colors */
+  --chart-bar: var(--primary-blue);
+  --chart-bar-hover: var(--primary-blue-light);
+
+  /* Primary Colors */
+  --text-primary: #0d6efd; /* Blue */
+  --text-secondary: #6c757d; /* Gray */
+  --text-success: #198754; /* Green */
+  --text-danger: #dc3545; /* Red */
+  --text-warning: #ffc107; /* Yellow */
+  --text-info: #0dcaf0; /* Cyan */
+  --text-light: #f8f9fa; /* Light Gray */
+  --text-dark: #212529; /* Dark Gray */
+  --text-muted: #6c757d; /* Muted Gray */
+}
+
+body {
+  min-width: 360px;
+}
+
+@media (prefers-color-scheme: dark) {
+  html body {
+    background: #fff;
+  }
+  h1.next-error-h1 {
+    border-right: 1px solid rgba(0, 0, 0, 0.3);
+  }
+}
+
+.error-text {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: baseline;
+
+  & > p {
+    color: var(--text-danger);
+    margin-bottom: 0px;
+  }
+  & > .error-icon {
+    color: var(--text-danger);
+  }
+}

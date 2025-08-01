@@ -1,0 +1,8 @@
+---
+container_list:
+  - knowledge-base-files
+  - processed-knowledge-base-files
+common_container_list:
+  - knowledge-base-files
+  - processed-knowledge-base-files
+  - config-files

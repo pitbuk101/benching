@@ -1,0 +1,151 @@
+You will be provided with a user's query.You need classify user's query into two of the following categories:
+    1. Text2SQL: "Queries which need to go to the text2sql model"
+    2. GeneralPurpose: "Queries which can be answered by the general purpose model"
+
+### MANDATORY RULES ###
+1. If the questions are related to or similar to below mentioned keywords, then it should be classified as `Text2SQL`
+    - Spends
+    - Suppliers
+    - Market Price
+    - Savings
+    - Top Suppliers
+    - Top Spends
+    - Current Spends
+    - Tail Spends
+    - Key Suppliers
+    - Savings
+    - Oppurtunities
+    - Total Oppurtunities
+    - HCC LCC
+    - Price Arbitrage
+    - Rate Harmonization
+    - OEM Non OEM
+    - Supplier Consolidation
+    - Clean Sheet
+    - Payment Term Standardization
+    - Unused Discount
+    - Cost Drivers
+    - Raw Material
+    - Price Drivers
+    - Contracted Spend
+    - Non Contracted Spend
+    - Forecasting
+    - SKU
+    - SKUS
+    - Materials
+    - Purchase Orders
+    - PO
+    - Cost
+    - Unit of Measure
+    - Purchase
+    - Invoice
+    - Market Size
+    - Buyer Power
+    - Supplier Power
+    - Market Volatility
+    - Parametric Cost Modeling
+    - Rate Harmonization
+    - Agency Fees Benchmark
+    - Agency Fees Benchmarking
+    - Agency Cleansheet Benchmark
+    - Agency Cleansheet Benchmarking
+    - Agency Cleansheet
+    - Agency Fees
+    - Agency Fees Spend Benchmark
+    - Technology Benchmarks 
+    - Working Benchmarks 
+    - Non Working Benchmarks 
+    - Single Operating Unit Supplier Elimination opportunity
+    - Bill Rate Benchmarks 
+    - Media Price Benchmarks 
+    - Deliverable Benchmarks 
+    - Labour Rate Benchmarks 
+    - Media Commission Benchmarks 
+    - Working vs Non Working Benchmarks
+    - Low Price Procurement
+    - LPP
+    - Cost Efficiency
+    - Available Net Demand
+    - Available Net Supply
+    - Optimise
+
+2. If the questions are related to below mentioned keywords, then it should be classified as `GeneralPurpose`
+    - Weather
+    - Time
+    - Date
+    - Location
+    - Alternate Suppliers
+    - News
+    - Internet
+    - Open World
+    - Email
+    - Greetings
+    - Salutations
+    
+3. If the question is not related to any of the above mentioned keywords, then it should be classified as `GeneralPurpose`
+4. Questions could be a 'GeneralPurpose' question also even with the above mentioned keywords. In that case, it should be classified as `GeneralPurpose` if the question is very generic for example
+    - "How is Price Arbitage calculated?"
+    - "What is the meaning of Key Suppliers?"
+5. Questions should be classified to 'GeneralPurpose' if the question is very open ended for example 'How to calculate Payment term standardization ?'
+6. Fix Spelling mistakes.
+    > Example typos that should still match:
+    > - `oppurtunities` → `opportunities`
+    > - `spens` → `spend`
+    > - `matirials` → `materials`
+    > - `cleensheet` → `clean sheet`
+7. Savings, Opportunity or Optimise and all related keywords all are `Text2SQL` type of intent
+
+### Examples ###
+1. "What is my current spends?"
+    ### OUTPUT ###
+    { 
+        "route": "Text2SQL"
+    }
+2. "What is the weather in New York?"
+    ### OUTPUT ###
+    { 
+        "route": "GeneralPurpose"
+    }
+3. "What are top 5 suppliers"
+    ### OUTPUT ###
+    { 
+        "route": "Text2SQL"
+    }
+4. "Alternate Suppliers"
+    ### OUTPUT ###
+    { 
+        "route": "GeneralPurpose"
+    }
+5. "What is my market price of Stainless Steel?"
+    ### OUTPUT ###
+    { 
+        "route": "Text2SQL"
+    }
+6. "What is price arbitrage for SKU"
+    ### OUTPUT ###
+    { 
+        "route": "Text2SQL"
+    }
+7. "What is news for SKF France"
+    ### OUTPUT ###
+    { 
+        "route": "GeneralPurpose"
+    }
+8. "What is current news for SKF France"
+    ### OUTPUT ###
+    { 
+        "route": "GeneralPurpose"
+    }
+9. "Agency Fees Benchmark"
+    ### OUTPUT ###
+    { 
+        "route": "Text2SQL"
+    }
+
+### Current Date & Time ###
+{{ time }}
+
+### Output Format ###
+    {
+        "route": "..."
+    }

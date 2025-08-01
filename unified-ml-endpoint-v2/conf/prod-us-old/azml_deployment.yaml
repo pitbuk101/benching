@@ -1,0 +1,106 @@
+---
+global:
+  workspace_name: "aza-ml-a9e1e3f"
+  subscription_id: "0d4bb8e1-ab95-4f74-9da8-46a090add169"
+  resource_group: "sourceaiproduct-a9e1e3f"
+  msi_client_id: "4fbb4384-4e3f-418f-bdc6-eb6af0be297e"
+  sp_client_id: "c76d2967-82be-41ff-bb21-cb44925a2401"
+  azure_tenant_id: "b0257c14-cacc-44c6-8927-5b4ce5de0874"
+
+static_deployment_conf:
+  # NOTE: You can not update instance type without deleting the resource.
+  instance_type: "Standard_DS3_v2"
+  instance_count: 1
+  request_timeout_ms: 180000
+  max_queue_wait_ms: 180000
+  max_concurrent_requests_per_instance: 1
+  readiness_timeout_seconds: 90
+  liveness_timeout_seconds: 90
+  app_insights_enabled: true
+  db_migrate_compute_target: "CPU-DS2-v2"
+
+endpoints:
+  - name: "data-retrieval-prod-us"
+    deploy_endpoint: true
+    deploy_deployment: true
+    env_name: "orp-genai-conda"
+    entrypoint: "src/ada/azml_realtime_deployments/document_service_deployment.py"
+
+  - name: "data-retrieval-service-prod-us"
+    deploy_endpoint: true
+    deploy_deployment: true
+    env_name: "orp-genai-conda"
+    entrypoint: "src/ada/azml_realtime_deployments/data_retrieval_service_deployment.py"
+
+  - name: "contract-preprocessing-prod-us"
+    deploy_endpoint: true
+    deploy_deployment: true
+    env_name: "orp-genai-conda"
+    entrypoint: "src/ada/azml_realtime_deployments/preprocessing_deployment.py"
+    job_params:
+      datastore: "workspaceblobstore"
+      compute: "CPU-DS2-v2"
+
+  - name: "leakage-extraction-prod-us"
+    deploy_endpoint: true
+    deploy_deployment: true
+    env_name: "orp-genai-conda"
+    entrypoint: "src/ada/azml_realtime_deployments/leakage_extraction_deployment.py"
+
+  - name: "unified-model-prod-us"
+    deploy_endpoint: true
+    deploy_deployment: true
+    env_name: "orp-genai-conda"
+    entrypoint: "src/ada/azml_realtime_deployments/intent_model_v2_deployment.py"
+    override_deployment_conf:
+      max_concurrent_requests_per_instance: 8
+      instance_type: "Standard_DS4_v2"
+      liveness_timeout_seconds: 180
+
+  - name: "top-ideas-prod-us"
+    deploy_endpoint: true
+    deploy_deployment: true
+    env_name: "orp-genai-conda"
+    entrypoint: "src/ada/azml_realtime_deployments/top_idea_deployment.py"
+
+  - name: "ppt-generation-prod-us"
+    deploy_endpoint: true
+    deploy_deployment: true
+    env_name: "orp-genai-conda"
+    entrypoint: "src/ada/azml_realtime_deployments/ppt_generation_deployment.py"
+    override_deployment_conf:
+      max_concurrent_requests_per_instance: 8
+      instance_type: "Standard_DS4_v2"
+      liveness_timeout_seconds: 180
+
+components:
+  preprocessing_production:
+    component_name: "preprocessing_production"
+    register: true
+    source: "src/ada/azml_components/pipeline_prod.yml"
+
+models:
+  contract_qna_classifier:
+    model_name: "contract_question_model_prod"
+    register: true
+    source: "contract_qna_classifier_model.pkl"
+    description: "custom model to classify contract question"
+    version: 3
+    training_data: "data/contract_qna/contract_question_classification_data.csv"
+    encoding: 'utf-8'
+    training_column: "question"
+    class_column: "category"
+    embedding:
+      embedding_model: "sentence-transformers/bert-base-nli-mean-tokens"
+      tokenizer: "sentence-transformers/bert-base-nli-mean-tokens"
+      embedding_model_type: "bert"
+    model_function_name: "voting_classifier"
+    rf_params:
+      n_estimators: 100
+      max_depth: 8
+      min_samples_split: 2
+    svc_params:
+      kernel: "linear"
+      probability: true
+
+base_endpoint_url: https://endpoint-name.eastus.inference.ml.azure.com/score

@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    container_name: unified-ml-endpoint
+    ports:
+      - "8000:8000"
+    networks:
+      - unified-ml-network
+
+networks:
+  unified-ml-network:
+    driver: bridge

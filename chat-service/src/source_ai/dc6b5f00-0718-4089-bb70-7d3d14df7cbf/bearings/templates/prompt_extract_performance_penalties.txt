@@ -1,0 +1,34 @@
+This document is a contract between the Buyer and the Supplier. The Buyer agrees to purchase goods from the Supplier under the terms outlined below. The Supplier is responsible for providing the goods as specified, and both parties agree to the terms of payment, delivery, and other conditions as detailed in this agreement.
+Extract only the "Performance penalties" field from the contract text and return the result as a JSON object matching the structure and key names in the provided template at the end of this prompt.
+
+**Instructions:**
+- Extract all details about penalties, damages, or consequences for failing to meet contractual obligations (such as late delivery, late documentation, or other performance failures).
+- For each penalty, extract:
+  - "condition": The specific condition or event that triggers the penalty (e.g., "late delivery", "late documentation").
+  - "delivery": Any delivery details or deadlines related to the penalty.
+  - "penality": The penalty amount, percentage, or description.
+- If a value is not found, return an empty string for that field.
+- Always use the provided JSON template for your output. Do not add or remove fields.
+
+**Example Input:**  
+"LIQUIDATED DAMAGES Buyer has the right to impose liquidated damages on late documentation submittals and/or on late delivery of the Products per the chart below..."
+
+**Expected Output:**  
+```json
+{
+  "Performance penalties": [
+    {
+      "condition": "late documentation submittals",
+      "delivery": "",
+      "penality": "liquidated damages"
+    },
+    {
+      "condition": "late delivery of the Products",
+      "delivery": "",
+      "penality": "liquidated damages"
+    }
+  ]
+}
+```
+
+{{TEMPLATE_JSON}}

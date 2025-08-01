@@ -1,0 +1,61 @@
+---
+$schema:
+  https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: preprocessing_prod
+display_name: Run preprocessing pipeline for sourceai
+type: command
+is_deterministic: false
+inputs:
+  tenant_id:
+    type: string
+  input_data_filename:
+    type: string
+  sku_list:
+    type: string
+    optional: true
+  document_id:
+    type: number
+  document_type:
+    type: string
+  region:
+    type: string
+    optional: true
+  category:
+    type: string
+  supplier:
+    type: string
+    optional: true
+  input_container:
+    type: string
+  output_container:
+    type: string
+  input_link:
+    type: boolean
+    optional: true
+  azure_client_secret:
+    type: string
+    optional: true
+  azure_client_secret_secondary:
+    type: string
+    optional: true
+outputs:
+  output_link:
+    type: boolean
+code: .
+environment:
+  azureml:orp-genai-conda@latest
+command: >-
+  python src/ada/azml_components/preprocessing.py
+  --tenant_id """${{inputs.tenant_id}}"""
+  --input_data_filename """${{inputs.input_data_filename}}"""
+  --document_id """${{inputs.document_id}}"""
+  --document_type """${{inputs.document_type}}"""
+  --category """${{inputs.category}}"""
+  --input_container """${{inputs.input_container}}"""
+  --output_container """${{inputs.output_container}}"""
+  $[[--region ${{inputs.region}}]]
+  $[[--sku_list ${{inputs.sku_list}}]]
+  $[[--supplier "${{inputs.supplier}}"]]
+  $[[--azure_client_secret ${{inputs.azure_client_secret}}]]
+  $[[--azure_client_secret_secondary ${{inputs.azure_client_secret_secondary}}]]
+  $[[--input_link ${{inputs.input_link}}]]

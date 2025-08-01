@@ -1,0 +1,1 @@
+"""Clauses use case."""

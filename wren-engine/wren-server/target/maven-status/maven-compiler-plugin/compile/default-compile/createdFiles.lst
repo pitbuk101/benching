@@ -1,0 +1,4 @@
+io/wren/server/module/MainModule.class
+io/wren/server/module/DuckDBConnectorModule.class
+io/wren/server/WrenServer.class
+io/wren/server/module/WebModule.class

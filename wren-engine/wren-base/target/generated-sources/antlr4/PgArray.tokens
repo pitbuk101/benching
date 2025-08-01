@@ -1,0 +1,10 @@
+T__0=1
+T__1=2
+T__2=3
+NULL=4
+QUOTED_STRING=5
+UNQUOTED_STRING=6
+WS=7
+'{'=1
+','=2
+'}'=3

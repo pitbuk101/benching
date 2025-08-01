@@ -1,0 +1,55 @@
+# for testing only, do not update
+
+# llm runner
+model_choice: gpt-4o-mini
+embedding_engine: text-embedding-ada-002
+vectorstore:
+  embedding: FAISS (local)
+  chunk_size: 1200
+  chunk_overlap: 0
+  min_threshold : 0.1
+  max_threshold : 0.5
+  cluster_len_lower_limit : 60
+  cluster_len_upper_limit : 3000
+
+
+# openai conf
+embeddings: text-embedding-ada-002
+gpt_long: gpt-4o-mini
+gpt: gpt-4o-mini
+gpt4: gpt-4o
+gpt4_long: gpt-4o
+open_api_base_url: https://sourceai-c29ae00-uksouth.openai.azure.com
+openai_api_type: azure
+openai_api_version: 2023-03-15-preview
+vision_endpoint: https://sps-cognitive-services-test.cognitiveservices.azure.com
+multidocs_count: 10
+threshold_idea_area: 0.30
+top_1_search_result: 1
+
+# model base
+models:
+  - name: "OpenAI ChatGPT"
+    model_name: "gpt-4o-mini"
+    host: "openai-chat"
+    max_tokens: 4096
+  - name: "OpenAI ChatGPT (16k)"
+    model_name: "gpt-4o-mini"
+    host: "openai-chat"
+    max_tokens: 6000
+  - name: "OpenAI GPT-4"
+    model_name: "gpt-4o"
+    host: "openai-chat"
+    max_tokens: 8192
+  - name: "OpenAI GPT-4 32k"
+    model_name: "gpt-4o"
+    host: "openai-chat"
+    max_tokens: 32768
+  - name: "OpenAI davinci-3"
+    model_name: "text-davinci-003"
+    host: "openai"
+    max_tokens: 4096
+  - name: "OpenAI davinci-2"
+    model_name: "text-davinci-002"
+    host: "openai"
+    max_tokens: 4096

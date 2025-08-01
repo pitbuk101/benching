@@ -1,0 +1,38 @@
+---
+local-runs:
+  - pipeline-nodes:
+    - pdf-reader
+    - preprocessing_dev
+    example-payload:
+      tenant_id: "920a2f73-c7db-405f-98ea-f768c6da864f"
+      document_id: 1010
+      input_data_filename: "10_INDUSTRIAL_CZ_Maintenance.pdf"
+      document_type: "CONTRACT"
+      region: "EMEA"
+      category: "IT"
+      supplier: "Faber"
+      sku_list: [
+    {'id': 'POR010.serv-6205-2Z/C3', 'code': '6205-2Z/C3', 'description': 'Bearings'},
+    {'id': 'POR010.serv-6206-2Z/C3', 'code': '6206-2Z/C3', 'description': 'Bearings'},
+    {'id': 'POR010.serv-6207-2RS1K', 'code': '6207-2RS1K', 'description': 'Bearing fan GXHP-5-040'},
+    {'id': 'POR010.serv-6208-2RS1K', 'code': '6208-2RS1K', 'description': 'Bearing fan GXHP-5-045'},
+    {'id': 'POR010.serv-6208-2Z/C3', 'code': '6208-2Z/C3', 'description': 'Motor bearing front'},
+    {'id': 'POR010.serv-6209-2Z/C3', 'code': '6209-2Z/C3', 'description': 'Bearing engine exhaust'},
+    {'id': 'POR010.serv-6306-2Z/C3', 'code': '6306-2Z/C3', 'description': 'Bearings'},
+    {'id': 'POR010.serv-6308-2Z/C3', 'code': '6308-2Z/C3', 'description': 'Bearings'},
+    {'id': 'POR010.serv-Ložisko ventilátoru', 'code': 'Ložisko ventilátoru', 'description': 'fan bearings'},
+    {'id': 'POR010.serv-RABRB 20/52-FA106', 'code': 'RABRB 20/52-FA106', 'description': 'Ventilátrou bearing units plus AT 10.10'},
+    {'id': 'POR010.serv-RABRB 25/62-FA106', 'code': 'RABRB 25/62-FA106', 'description': 'Fan bearing TLZ 315'},
+    {'id': 'POR010.serv-RABRB 30/72-FA 106', 'code': 'RABRB 30/72-FA 106', 'description': 'Bearing fan THLZ 355'},
+    {'id': 'POR010.serv-RABRB 35/80-FA106', 'code': 'RABRB 35/80-FA106', 'description': 'Bearing fan THLZ 450'},
+    {'id': 'POR010.serv-RABRB 40/85-FA106', 'code': 'RABRB 40/85-FA106', 'description': 'Bearing Supply fan'},
+    {'id': 'POR010.serv-YET 205', 'code': 'YET_205', 'description': 'Bearing Supply fan'},
+    {'id': 'POR010.serv-H 207', 'code': 'H 207', 'description': 'Chuck'},
+    {'id': 'POR010.serv-H 208', 'code': 'H 208', 'description': 'Chuck'},
+    {'id': 'POR010.serv-RIS 205', 'code': 'RIS 205', 'description': 'Ring'}
+]
+      doc_info_table: "document_information"
+      embedding_model: "text-embedding-ada-002"
+      doc_chunks_table: "document_chunks"
+      contracts_kpi_table: "contract_details"
+      contract_sku_details_table: "contract_sku_details"

@@ -1,0 +1,14 @@
+{
+  "tenant_list": {
+    "help": "A comma-separated tenant list present in a ML workspace",
+    "required": true
+  },
+  "azure_client_secret": {
+    "default": "",
+    "help": "Service account secret"
+  },
+  "azure_client_secret_secondary": {
+    "default": "",
+    "help": "Service account secret secondary"
+  }
+}

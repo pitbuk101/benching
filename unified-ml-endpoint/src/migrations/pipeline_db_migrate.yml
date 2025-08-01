@@ -1,0 +1,24 @@
+---
+$schema:
+  https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: db_migrate_pre_deploy
+display_name: Run DB Migrations
+type: command
+is_deterministic: false
+code: .
+environment:
+  azureml:orp-genai-conda@latest
+inputs:
+  tenant_list:
+    type: string
+  azure_client_secret:
+    type: string
+    optional: true
+  azure_client_secret_secondary:
+    type: string
+    optional: true
+command: >-
+  python src/migrations/db_migrate.py
+  --tenant_list """${{inputs.tenant_list}}"""
+  $[[--azure_client_secret ${{inputs.azure_client_secret}}]]
+  $[[--azure_client_secret_secondary ${{inputs.azure_client_secret_secondary}}]]

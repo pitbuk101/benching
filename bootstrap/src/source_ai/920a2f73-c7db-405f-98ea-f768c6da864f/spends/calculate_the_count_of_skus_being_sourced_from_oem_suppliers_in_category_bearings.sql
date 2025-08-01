@@ -1,0 +1,41 @@
+SELECT
+	s.TXT_CONS_SUPPLIER_L1 AS OEM_Supplier,
+	m.TXT_MATERIAL AS OEM_SKU,
+	COUNT(DISTINCT fip.DIM_MATERIAL) AS OEM_SKU_Count,
+	YEAR(TO_DATE(p.DIM_DATE, 'YYYYMMDD')) AS Year,
+	ct.TXT_CATEGORY_LEVEL_2 AS Category
+FROM
+	data.VT_C_FACT_INVOICEPOSITION_MULTIPLIED fip
+JOIN 
+        data.VT_DIM_Period p ON
+	fip.DIM_DATE = p.DIM_DATE
+JOIN 
+        data.VT_C_DIM_Supplier s ON
+	fip.DIM_SUPPLIER = s.DIM_SUPPLIER
+JOIN 
+        data.VT_DIM_SupplierStatus ss ON
+	fip.DIM_SUPPLIER_STATUS = ss.DIM_SUPPLIER_STATUS
+JOIN 
+        data.VT_C_DIM_ValueType vt ON
+	fip.dim_value_type = vt.DIM_VALUE_TYPE
+JOIN 
+        data.VT_C_DIM_Material m ON
+	fip.DIM_MATERIAL = m.DIM_MATERIAL
+JOIN 
+        data.VT_C_DIM_SourcingTree_TECHCME ct ON
+	fip.DIM_SOURCING_TREE = ct.DIM_SOURCING_TREE
+WHERE
+	YEAR(TO_DATE(p.DIM_DATE, 'YYYYMMDD')) = YEAR(CURRENT_TIMESTAMP)
+	AND 
+        s.TXT_OEM_TYPE = 'OEM'
+	AND 
+        ss.DIM_SUPPLIER_STATUS = 'E'
+	AND 
+        vt.DIM_VALUE_TYPE = 'I'
+	AND 
+        ct.TXT_CATEGORY_LEVEL_2 = 'Bearings'
+ GROUP BY 
+	YEAR(TO_DATE(p.DIM_DATE, 'YYYYMMDD')),
+	ct.TXT_CATEGORY_LEVEL_2,
+	m.TXT_MATERIAL ,
+	s.TXT_CONS_SUPPLIER_L1 

@@ -1,0 +1,14 @@
+
+external_api_url: "https://dev-sourceai.mckinsey.com/api/graphql"
+origin: "https://dev-sourceai.mckinsey.com"
+referer: "https://dev-sourceai.mckinsey.com/home"
+kf_chatbot_enabled: false
+open_world_response: true
+
+conn_params:
+  user:
+  account:
+  database:
+  schema:
+  warehouse:
+  EXTERNAL_API_URL:

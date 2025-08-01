@@ -1,0 +1,61 @@
+# llm runner
+model_choice: gpt-4o-mini
+embedding_engine: text-embedding-ada-002
+vectorstore:
+  embedding: FAISS (local)
+  chunk_size: 1200
+  chunk_overlap: 0
+  min_threshold: 0.1
+  max_threshold: 0.5
+  cluster_len_lower_limit: 60
+  cluster_len_upper_limit: 3000
+
+# openai conf
+embeddings: text-embedding-ada-002
+gpt_long: gpt-4o-mini
+gpt: gpt-4o-mini
+gpt4: gpt-4o
+gpt4_long: gpt-4o
+gpt4_turbo: gpt4-1106-Preview
+open_api_base_url: https://azure.eu.prod.ai-gateway.quantumblack.com/5db4dbf6-76e0-4220-b9f6-cc4b9839027e/
+openai_api_type: azure
+openai_api_version: 2024-04-01-preview
+vision_endpoint: https://northeurope.api.cognitive.microsoft.com/
+multidocs_count: 10
+threshold_idea_area: 0.30
+top_1_search_result: 1
+
+# model base
+models:
+  - name: "OpenAI ChatGPT"
+    model_name: "gpt-4o-mini"
+    host: "openai-chat"
+    max_tokens: 4096
+  - name: "OpenAI ChatGPT (16k)"
+    model_name: "gpt-4o-mini"
+    host: "openai-chat"
+    max_tokens: 6000
+  - name: "OpenAI GPT-4"
+    model_name: "gpt-4o"
+    host: "openai-chat"
+    max_tokens: 8192
+  - name: "OpenAI GPT-4 32k"
+    model_name: "gpt-4o"
+    host: "openai-chat"
+    max_tokens: 32768
+  - name: "OpenAI davinci-3"
+    model_name: "text-davinci-003"
+    host: "openai"
+    max_tokens: 4096
+  - name: "OpenAI davinci-2"
+    model_name: "text-davinci-002"
+    host: "openai"
+    max_tokens: 4096
+  - name: "OpenAI GPT 4o"
+    model_name: "gpt-4o"
+    host: "openai-chat"
+    max_tokens: 128000
+  - name: "OpenAI GPT 4o-mini"
+    model_name: "gpt-4o-mini"
+    host: "openai-chat"
+    max_tokens: 128000

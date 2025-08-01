@@ -1,0 +1,1 @@
+"""Summary generation use case."""

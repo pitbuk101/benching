@@ -1,0 +1,118 @@
+import redis
+import json
+from src.env import REDIS_HOSTNAME, REDIS_PORT, REDIS_PASSWORD, CACHE_DB
+from src.utils.logs import get_custom_logger
+import ssl
+
+logger = get_custom_logger("redis_cache")
+
+class RedisCacheProvider:
+    def __init__(self):
+        # Set low connect and socket timeouts for faster failure if Redis is slow/unreachable
+        logger.info("Initializing Redis cache provider...")
+        logger.debug(f"Connecting to {REDIS_HOSTNAME}:{REDIS_PORT}")
+        if REDIS_HOSTNAME in ["localhost", "redis"]:
+            logger.info("Using local Redis instance")
+            ssl_cert = None
+            ssl_required=False
+        else:
+            logger.info("Using AWS ElastiCache Redis instance with SSL")
+            ssl_cert = ssl.CERT_REQUIRED
+            ssl_required=True
+        self.client = redis.Redis(
+            host=REDIS_HOSTNAME,
+            port=int(REDIS_PORT),
+            password=REDIS_PASSWORD,
+            ssl=ssl_required,
+            ssl_cert_reqs=ssl_cert,
+            decode_responses=True,
+            socket_connect_timeout=20,  # seconds
+            socket_timeout=20,          # seconds
+        )
+        try:
+            self.client.ping()
+            logger.info("Connected to Redis cache.")
+        except redis.ConnectionError as e:
+            logger.error(f"Redis connection failed: {e}")
+            raise
+
+    def get(self, key: str):
+        try:
+            value = self.client.get(key)
+            if value is not None:
+                logger.info(f"Cache hit for key: {key}")
+                return value
+            else:
+                logger.info(f"Cache miss for key: {key}")
+            return None
+        except Exception as e:
+            logger.error(f"Error getting key {key} from Redis: {e}")
+            return None
+
+    def set(self, key: str, value, ex: int = 3600):
+        try:
+            self.client.set(key, value, ex=ex)
+            logger.info(f"Value set in cache for key: {key}")
+        except Exception as e:
+            logger.error(f"Error setting key {key} in Redis: {e}")
+
+    def ingest(self, data: dict, ex: int = 3600):
+        """
+        Ingests multiple key-value pairs into Redis cache.
+        """
+        try:
+            with self.client.pipeline() as pipe:
+                for key, value in data.items():
+                    pipe.set(key, value, ex=ex)
+                pipe.execute()
+            logger.info(f"Ingested {len(data)} items into cache.")
+        except Exception as e:
+            logger.error(f"Error ingesting data into Redis: {e}")
+
+    def get_json(self, key: str):
+        """
+        Get a JSON value from Redis and deserialize it.
+        """
+        try:
+            value = self.client.get(key)
+            if value is not None:
+                logger.info(f"Cache hit for key: {key}")
+                return json.loads(value)
+            else:
+                logger.info(f"Cache miss for key: {key}")
+            return None
+        except Exception as e:
+            logger.error(f"Error getting JSON key {key} from Redis: {e}")
+            return None
+
+    def set_json(self, key: str, value, ex: int = 3600):
+        """
+        Serialize a value as JSON and store it in Redis.
+        """
+        try:
+            value_to_store = json.dumps(value)
+            self.client.set(key, value_to_store, ex=ex)
+            logger.info(f"JSON value set in cache for key: {key}")
+        except Exception as e:
+            logger.error(f"Error setting JSON key {key} in Redis: {e}")
+
+    def ingest_json(self, data: dict, ex: int = 3600):
+        """
+        Ingest multiple key-value pairs as JSON into Redis cache.
+        """
+        try:
+            with self.client.pipeline() as pipe:
+                for key, value in data.items():
+                    value_to_store = json.dumps(value)
+                    pipe.set(key, value_to_store, ex=ex)
+                pipe.execute()
+            logger.info(f"Ingested {len(data)} JSON items into cache.")
+        except Exception as e:
+            logger.error(f"Error ingesting JSON data into Redis: {e}")
+
+cache = RedisCacheProvider()
+# Usage example 
+# cache = RedisCacheProvider()
+# cache.set('foo', {'bar': 1})
+# print(cache.get('foo'))
+# cache.ingest({'a': {'x': 1}, 'b': [1,2,3]})

@@ -1,0 +1,98 @@
+{
+  "tenant_id": {
+    "required": false,
+    "help": "ID of tenant"
+  },
+  "document_id": {
+    "required": false,
+    "help": "ID of contract/document"
+  },
+  "input_data_filename": {
+    "help": "ID of contract/document",
+    "required": false
+  },
+  "sku_list": {
+    "help": "list of SKUs id along with their description and code",
+    "required": false
+  },
+  "document_type": {
+    "help": "Type of document (contract / document)",
+    "required": false
+  },
+  "region": {
+    "help": "Type of document (contract / document)",
+    "required": false
+  },
+  "category": {
+    "help": "Name of category",
+    "required": false
+  },
+  "supplier": {
+    "help": "Name of supplier",
+    "required": false
+  },
+  "input_container": {
+    "default": ".",
+    "help": "Name of container where input data is located"
+  },
+  "output_container": {
+    "default": "./outputs",
+    "help": "Name of container where output data will be located"
+  },
+  "embedding_model": {
+    "default": "text-embedding-ada-002",
+    "help": "Name of deployed OpenAI embedding model"
+  },
+  "secret_names": {
+    "default": "openai-api-url,openai-api-key,openai-api-version,pg-admin-password",
+    "help": "List of secrets with stored keys to OpenAI, Azure OCR, PSQL database"
+  },
+  "psql_admin_password": {
+    "default": "pg-admin-password",
+    "help": "Name of secret which stores psql admin password"
+  },
+  "openai_api_url": {
+    "default": "openai-api-url",
+    "help": "Name of secret which stores OpenAI endpoint"
+  },
+  "openai_api_key": {
+    "default": "openai-api-key",
+    "help": "Name of secret which stores OpenAI API key"
+  },
+  "openai_api_version": {
+    "default": "openai-api-version",
+    "help": "Name of secret which stores OpenAI API version"
+  },
+  "doc_info_table": {
+    "default": "document_information",
+    "help": "Name of table with general information about document"
+  },
+  "doc_chunks_table": {
+    "default": "document_chunks",
+    "help": "Name of table with document chunks and embeddings"
+  },
+  "contracts_kpi_table": {
+    "default": "contract_details",
+    "help": "Name of table with kpi details  about contracts"
+  },
+  "contract_sku_details_table": {
+    "default": "contract_sku_details",
+    "help": "Name of table with leakage information about contract"
+  },
+  "input_link": {
+    "default": false,
+    "help": "Dummy arg for sequential runs"
+  },
+  "output_link": {
+    "default": false,
+    "help": "Dummy arg for sequential runs"
+  },
+  "azure_client_secret": {
+    "default": "",
+    "help": "Service account secret"
+  },
+  "azure_client_secret_secondary": {
+    "default": "",
+    "help": "Service account secret secondary"
+  }
+}

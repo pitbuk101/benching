@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="CHECK" timestamp="1740037419572">
+    <module artifactId="wren-tests" groupId="io.wren" version="0.12.1"/>
+    <files>
+        <file path="src/main/java/io/wren/testing/TestingWrenServer.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/AbstractFunctionTest.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/AbstractSqlConverterTest.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/AbstractTestFramework.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/RequireWrenServer.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/TestAnalysisResource.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/TestBackwardSupportConfig.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/TestConfigResource.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/TestDuckDBResource.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/TestMDLResource.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/TestMDLResourceV2.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/WebApplicationExceptionAssert.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/duckdb/TestDuckDBSqlConverter.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/duckdb/TestDynamicFields.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/duckdb/TestFunctionDuckDB.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/duckdb/TestStartWithDuckDB.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/duckdb/TestWrenWithDuckDB.java" result="PRESENT"/>
+        <file path="src/test/java/io/wren/testing/duckdb/TestWrenWithDuckDBTableFunction.java" result="PRESENT"/>
+    </files>
+</licensePluginReport>

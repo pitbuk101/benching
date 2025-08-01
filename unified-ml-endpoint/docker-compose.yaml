@@ -1,0 +1,26 @@
+version: '1'
+
+volumes:
+  data:
+
+services:
+  sps-unified-ml-endpoint:
+    image: unified-ml-endpoint
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - data:/data
+    environment:
+      ENV_TYPE: ${ENV_TYPE}
+      LOCAL_DB_MODE: ${LOCAL_DB_MODE}
+      AWS_DATABASE_ACCESS: ${AWS_DATABASE_ACCESS}
+      LOCAL_MODEL_MODE: ${LOCAL_MODEL_MODE}
+      APP_DIR: ${APP_DIR}
+      OPENAI_API_VERSION: ${OPENAI_API_VERSION}
+      VISION_KEY: ${VISION_KEY}
+      
+
+    command: poetry run uvicorn app:app

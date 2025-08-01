@@ -1,0 +1,34 @@
+This document is a contract between the Buyer and the Supplier. The Buyer agrees to purchase goods from the Supplier under the terms outlined below. The Supplier is responsible for providing the goods as specified, and both parties agree to the terms of payment, delivery, and other conditions as detailed in this agreement.
+Extract the "Contract Digest" information from the contract text and return the result as a JSON object matching the structure and key names in the provided template at the end of this prompt.
+
+**Instructions:**
+- Extract the key contract summary information as shown in the contract.
+- For the Contract Digest, extract:
+  - "Parties involved": The contracting parties and contract duration details.
+  - "Scope of work": Description of the work or deliverables to be provided.
+  - "Payment terms": Payment conditions, timeline, and terms.
+  - "Termination clause": Termination conditions and notice requirements.
+- If a value is not found, return null or an empty string as appropriate.
+- Always use the provided JSON template for your output. Do not add or remove fields.
+- Extract dates, durations, and specific terms mentioned in the contract.
+
+**Example Input:**  
+"Contract Digest (by Ada)
+Parties Involved: The contract is between The Client Co. and The Supplier Co. for 36 months starting from 1st January 2023
+Scope of Work: The Supplier Co. is responsible to deliver bearings per annexure B and C
+Payment: Payment within 60 days of receipt and invoice as per agreed INCO terms
+Termination: Either party may terminate with 60 days written notice"
+
+**Expected Output:**  
+```json
+{
+  "Contract Digest": {
+    "Parties involved": "The contract is between The Client Co. and The Supplier Co. for 36 months starting from 1st January 2023",
+    "Scope of work": "The Supplier Co. is responsible to deliver bearings per annexure B and C",
+    "Payment terms": "Payment within 60 days of receipt and invoice as per agreed INCO terms",
+    "Termination clause": "Either party may terminate with 60 days written notice"
+  }
+}
+```
+
+{{TEMPLATE_JSON}}

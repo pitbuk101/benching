@@ -1,0 +1,31 @@
+This document is a contract between the Buyer and the Supplier. The Buyer agrees to purchase goods from the Supplier under the terms outlined below. The Supplier is responsible for providing the goods as specified, and both parties agree to the terms of payment, delivery, and other conditions as detailed in this agreement.
+Extract only the "SKUs" field from the contract text and return the result as a JSON object matching the structure and key names in the provided template at the end of this prompt.
+
+**Instructions:**
+- Extract the detailed list of items being procured, as shown in the contract.
+- For each SKU, extract:
+  - "product ID": The unique identifier for the product.
+  - "description": The product description.
+  - "unit_price": The price per unit, if available.
+  - "quantity per SKU": The quantity for this SKU, if available.
+- If a value is not found, return null or an empty string as appropriate.
+- Always use the provided JSON template for your output. Do not add or remove fields.
+
+**Example Input:**  
+"1 POR004.000000000100025467 LOWER BEARING 443 276: HOUSING BLOCK 98.44 3,000"
+
+**Expected Output:**  
+```json
+{
+  "SKUs": [
+    {
+      "product ID": "POR004.000000000100025467",
+      "description": "LOWER BEARING 443 276: HOUSING BLOCK",
+      "unit_price": 98.44,
+      "quantity per SKU": 3000
+    }
+  ]
+}
+```
+
+{{TEMPLATE_JSON}}

@@ -1,0 +1,8 @@
+---
+global:
+  workspace_name: "aza-ml-c29ae00"
+  subscription_id: "a040e2a3-8274-4e55-8aa3-ec69a0265025"
+  resource_group: "sourceaiproduct-c29ae00"
+  msi_client_id: "98b10849-b951-41c2-a026-17b700472824"
+  sp_client_id: "c762147a-f99d-4d37-a78b-888b3c70dcc5"
+  azure_tenant_id: "b0257c14-cacc-44c6-8927-5b4ce5de0874"

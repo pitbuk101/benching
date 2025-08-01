@@ -1,0 +1,248 @@
+This document is a contract between the Buyer and the Supplier. The Buyer agrees to purchase goods from the Supplier under the terms outlined below. The Supplier is responsible for providing the goods as specified, and both parties agree to the terms of payment, delivery, and other conditions as detailed in this agreement.
+Extract the following fields from the contract text and return the result as a JSON object matching the structure and key names in the provided template at the end of this prompt.  
+**Important:** Use the exact key names and nesting as shown in the JSON template e.g., "Payment terms", "Buyer termination (cause) period", "Prices", etc.—do not use underscores or alternate names.
+
+For each field, you are provided:
+- **Definition:** A brief explanation of the field’s meaning in procurement contracts.
+- **Input Example:** A relevant contract paragraph or sentence.
+- **Expected Output:** The value as it should appear in the JSON, using the template's key names and structure.
+
+**Instructions:**
+- For fields representing a period or duration (such as "Buyer termination (cause) period", "Payment terms.domestic", "Contract duration", etc.), extract the numeric value (in days or months as appropriate) from the text. If not found, return null.
+- For all other fields, extract the value as a string, integer, list, or object as shown in the expected output. If not found, return null or an empty list as appropriate.
+- For nested fields, always return an object with the specified keys, even if values are missing (use null or empty list as appropriate).
+- Do not return any field as an object or dictionary unless it is shown as an object in the structure below.
+- If a field is missing, use null.
+- Use the provided JSON template at the end for the output structure and key names.
+
+---
+
+**Field:** Supplier  
+**Definition:** The name of supplier who is manufacturing or providing the goods.  
+**Input Example:**  
+"The goods covered by this Agreement are Bearings and Machined Components" manufactured by GBM SARL("Product(s)")"
+
+**Expected Output:**  
+GBM SARL
+
+---
+
+**Field:** Region  
+**Definition:** The geographical area where the supplier operates or is located.  
+**Input Example:**  
+"term is defined in the rules or regulations from the US Securities and Exchange Commission"
+
+**Expected Output:**  
+USA
+
+---
+
+**Field:** Payment terms  
+**Definition:** Conditions under which the buyer agrees to pay the supplier.  
+**Input Example:**  
+"DOMESTIC net sixty (60) days from Buyer’s receipt of Seller's correct invoice."  
+**Expected Output:**  
+{
+  "domestic": 60,
+  "export": null
+}
+
+---
+
+**Field:** Payment terms.domestic  
+**Definition:** Payment terms applicable for local suppliers.  
+**Input Example:**  
+"DOMESTIC net sixty (60) days from Buyer’s receipt of Seller's correct invoice."  
+**Expected Output:**  
+60
+
+---
+
+**Field:** Payment terms.export  
+**Definition:** Payment terms applicable for international suppliers.  
+**Input Example:**  
+"EXPORT net sixty (60) days after Bill of Lading, unless Vendor Managed"  
+**Expected Output:**  
+60
+
+---
+
+**Field:** Supplier termination (convenience) period  
+**Definition:** Notice period the supplier must give to end the contract without any specific reason.  
+**Input Example:**  
+(no relevant text found)  
+**Expected Output:**  
+null
+
+---
+
+**Field:** Buyer termination (convenience) period  
+**Definition:** Notice period the buyer must give to end the contract without cause.  
+**Input Example:**  
+"Buyer may terminate this Agreement for its convenience upon at least ninety (90) days written notice to Seller."  
+**Expected Output:**  
+90
+
+---
+
+**Field:** Buyer termination (cause) period  
+**Definition:** Timeframe required for the buyer to terminate the contract due to supplier breach or non-compliance.  
+**Input Example:**  
+"Termination for Cause. ...such default is not substantially cured within thirty (30) days after written notice is given to the defaulting Party..."  
+**Expected Output:**  
+30
+
+---
+
+**Field:** Prices  
+**Definition:** Structure and level of pricing in the agreement.  
+**Input Example:**  
+(no relevant text found)  
+**Expected Output:**  
+{
+  "unit": null,
+  "lump sum": null,
+  "item-level": null,
+  "aggregate-level": null,
+  "discount conditions": null
+}
+
+---
+
+**Field:** Specific terms agreed  
+**Definition:** Any special or negotiated conditions outside the standard contract terms.  
+**Input Example:**  
+"Buyer commits to maintaining a minimum share level of 80%"  
+**Expected Output:**  
+"Buyer commits to maintaining a minimum share level of 80%"
+
+---
+
+**Field:** Incoterms/shipping  
+**Definition:** International Commercial Terms defining shipping responsibilities, costs, and risks between buyer and supplier.  
+**Input Example:**  
+'"incoterms_shipping": "Seller shall deliver the Products FCA (Buyer's location) or per Buyer's routing instructions indicated on the
+Purchase Order ("PO"). Shipment terms shall be designated per INCOTERMS 2010.Title to Product(s)
+will transfer from Seller to Buyer when the Products are accepted by Buyer Product lead times are listed
+in Attachment B."
+**Expected Output:**  
+"FCA"
+
+---
+
+**Field:** Payment/invoicing terms  
+**Definition:** Guidelines for billing and payments.  
+**Input Example:**  
+(no relevant text found)  
+**Expected Output:**  
+{
+  "Invoice requirements": [],
+  "Invoice submission": null
+}
+
+---
+
+**Field:** Jurisdiction/compliance  
+**Definition:** Legal framework and regulations governing the contract.  
+**Input Example:**  
+"jurisdiction located in India"  
+**Expected Output:**  
+"India"
+
+---
+
+**Field:** Vendor name and address/region  
+**Definition:** Supplier’s legal name and physical location.  
+**Input Example:**  
+'"name": "GBM SARL"'  
+**Expected Output:**  
+{
+  "name": "GBM SARL",
+  "address": null
+}
+
+---
+
+**Field:** Title for the contract  
+**Definition:** Official name or identifier for the contract document.  
+**Input Example:**  
+(no relevant text found)  
+**Expected Output:**  
+null
+
+---
+
+**Field:** Volume commitment  
+**Definition:** Minimum quantity or value that the buyer commits to purchase.  
+**Input Example:**  
+(no relevant text found)  
+**Expected Output:**  
+null
+
+---
+
+**Field:** Contract start date  
+**Definition:** Date on which the agreement becomes active.  
+**Input Example:**  
+"THIS LONG TERM AGREEMENT (the 'Agreement') dated September 1st, 2022 (the 'Effective Date')..."  
+**Expected Output:**  
+"01/09/2022"
+
+---
+
+**Field:** Contract expiry date  
+**Definition:** Date when the agreement ends, unless renewed.  
+**Input Example:**  
+"...till September 1st, 2025 is between BUYER..."  
+**Expected Output:**  
+"01/09/2025"
+
+---
+
+**Field:** Contract duration  
+**Definition:** Total time the contract is valid.  
+**Input Example:**  
+"the initial term of this Agreement shall be a period of Three (3) years beginning on the Effective Date..."  
+**Expected Output:**  
+36
+
+---
+
+**Field:** Renewal clause and notice period  
+**Definition:** Terms under which the contract may be extended and the time in advance required to notify for renewal or termination.  
+**Input Example:**  
+"This Agreement shall automatically renew yearly unless either party provides the other written notice of its intent not to renew not less than ninety (90) days prior to the expiration of the initial term or any renewal term."  
+**Expected Output:**  
+{
+  "Renewal": "This Agreement shall automatically renew yearly unless either party provides the other written notice of its intent not to renew not less than ninety (90) days prior to the expiration of the initial term or any renewal term.",
+  "Notice period": 90
+}
+
+---
+
+**General Guidance:**
+- Always use the provided JSON template for your output. Replace null placeholders with extracted values or null if not found.
+- For all fields, follow the extraction logic and output format shown in the examples above.
+- Do not add or remove fields from the template.
+- Use the exact key names and nesting as shown in the template below.
+
+{{TEMPLATE_JSON}}
+
+---
+
+**Reference: Incoterms (International Commercial Terms) Quick Guide**
+
+Applicable to Any Mode of Transport:
+- **EXW (Ex Works):** Buyer takes all responsibility from seller’s premises. Buyer bears all risks/costs after seller makes goods available.
+- **FCA (Free Carrier):** Seller delivers goods to a carrier named by the buyer. Seller clears goods for export, risk transfers at carrier handoff.
+- **CPT (Carriage Paid To):** Seller pays for transport to destination, risk passes at carrier. Seller pays freight, buyer bears risk after handoff to carrier.
+- **CIP (Carriage and Insurance Paid To):** Same as CPT, but seller also pays for insurance. Seller pays freight + insurance, risk passes at handoff.
+- **DAP (Delivered At Place):** Seller delivers when goods are ready for unloading at destination. Seller bears all risks/costs until goods arrive.
+- **DPU (Delivered at Place Unloaded):** Like DAP, but includes unloading. Seller bears cost/risk until goods are unloaded.
+- **DDP (Delivered Duty Paid):** Seller delivers goods, cleared for import and duties paid. Seller bears all costs/risk to buyer’s door including taxes.
+
+Applicable Only to Sea & Inland Waterway Transport:
+- **FAS (Free Alongside Ship):** Seller delivers alongside vessel at named port. Buyer loads and handles shipping.
+- **FOB (Free On Board):** Seller delivers goods on board the vessel. Risk passes once goods are on board.
+- **CFR (Cost and Freight):** Seller pays cost/freight to port, risk transfers on board. Buyer handles insurance.
+- **CIF (Cost, Insurance & Freight):** Like CFR, but seller pays for insurance too. Risk transfers on board; seller covers cost and insurance.

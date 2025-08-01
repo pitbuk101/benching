@@ -1,0 +1,365 @@
+version: "3"
+
+volumes:
+  data:
+  db_data:
+  redis_data:
+
+networks:
+  wren-network:
+    driver: bridge
+
+services:
+
+  bootstrap:
+    image: mckinsey-sai-genai-docker-local.jfrog.io/sai-bootstrap:latest
+    restart: on-failure
+    platform: ${PLATFORM}
+    environment:
+      DATA_PATH: /app/data
+    volumes:
+      - data:/app/data
+    command: /bin/sh /app/init.sh
+  wren-engine:
+    image: mckinsey-sai-genai-docker-local.jfrog.io/sai-engine-service:v0.0.1
+    # image:  ghcr.io/canner/wren-engine:0.13.1
+    shm_size: "4g"
+    restart: on-failure
+    platform: ${PLATFORM}
+    expose:
+      - ${WREN_ENGINE_PORT}
+      - ${WREN_ENGINE_SQL_PORT}
+    volumes:
+      - data:/usr/src/app/etc
+    networks:
+      - wren-network
+    depends_on:
+      - bootstrap
+  ibis-server:
+    image: mckinsey-sai-genai-docker-local.jfrog.io/sai-engine-ibis-service:v0.0.1
+    restart: on-failure
+    platform: ${PLATFORM}
+    expose:
+      - ${IBIS_SERVER_PORT}
+    environment:
+      WREN_ENGINE_ENDPOINT: http://wren-engine:${WREN_ENGINE_PORT}
+    networks:
+      - wren-network
+  qdrant:
+    image: mckinsey-sai-genai-docker-local.jfrog.io/sai-qdrant:latest
+    restart: on-failure
+    expose:
+      - 6333
+      - 6334
+    ports:
+      - "6333:6333"  # Maps the container's port 6333 to the host's port 6333
+      - "6334:6334"
+    volumes:
+      - data:/qdrant/storage
+    networks:
+      - wren-network
+  wren-ui:
+    # --image: mckinsey-sai-genai-docker-local.jfrog.io/sai-ui:v0.0.1 
+    # --image: mckinsey-sai-genai-docker-local.jfrog.io/sai-ui:vffe9b1b
+    # --mckinsey-sai-genai-docker-local.jfrog.io/sai-ui:v0.0.2 # * For docker
+    # --image: mckinsey-sws-repo-docker.jfrog.io/sai-ui:v0.0.1
+    image: ui-service:latest # * For docker
+    restart: on-failure
+    platform: ${PLATFORM}
+    environment:
+      DB_TYPE: sqlite
+      # /app is the working directory in the container
+      SQLITE_FILE: /app/data/db.sqlite3
+      WREN_ENGINE_ENDPOINT: http://wren-engine:${WREN_ENGINE_PORT}
+      WREN_AI_ENDPOINT: http://wren-ai-service:${WREN_AI_SERVICE_PORT}
+      IBIS_SERVER_ENDPOINT: http://ibis-server:${IBIS_SERVER_PORT}
+      # this is for telemetry to know the model, i think ai-service might be able to provide a endpoint to get the information
+      GENERATION_MODEL: ${GENERATION_MODEL}
+      # telemetry
+      WREN_ENGINE_PORT: ${WREN_ENGINE_PORT}
+      WREN_AI_SERVICE_VERSION: ${WREN_AI_SERVICE_VERSION}
+      WREN_UI_VERSION: ${WREN_UI_VERSION}
+      WREN_ENGINE_VERSION: ${WREN_ENGINE_VERSION}
+      USER_UUID: ${USER_UUID}
+      POSTHOG_API_KEY: ${POSTHOG_API_KEY}
+      POSTHOG_HOST: ${POSTHOG_HOST}
+      TELEMETRY_ENABLED: ${TELEMETRY_ENABLED}
+      # client side
+      NEXT_PUBLIC_USER_UUID: ${USER_UUID}
+      NEXT_PUBLIC_POSTHOG_API_KEY: ${POSTHOG_API_KEY}
+      NEXT_PUBLIC_POSTHOG_HOST: ${POSTHOG_HOST}
+      NEXT_PUBLIC_TELEMETRY_ENABLED: ${TELEMETRY_ENABLED}
+      EXPERIMENTAL_ENGINE_RUST_VERSION: ${EXPERIMENTAL_ENGINE_RUST_VERSION}
+      # MCKID configurations
+      OIDC_CLIENT_ID: ${NEXT_PUBLIC_OIDC_CLIENT_ID}
+      REDIRECT_BASE_URL: ${NEXT_PUBLIC_REDIRECT_BASE_URL}
+      OIDC_CONFIG_URL: ${NEXT_PUBLIC_OIDC_CONFIG_URL}
+      OIDC_FM: ${NEXT_PUBLIC_OIDC_FM}
+      NEXT_PUBLIC_OIDC_CLIENT_ID: ${NEXT_PUBLIC_OIDC_CLIENT_ID}
+      NEXT_PUBLIC_REDIRECT_BASE_URL: ${NEXT_PUBLIC_REDIRECT_BASE_URL}
+      NEXT_PUBLIC_OIDC_CONFIG_URL: ${NEXT_PUBLIC_OIDC_CONFIG_URL}
+      NEXT_PUBLIC_OIDC_FM: ${NEXT_PUBLIC_OIDC_FM}
+      # configs
+      WREN_PRODUCT_VERSION: ${WREN_PRODUCT_VERSION}
+    ports:
+      # HOST_PORT is the port you want to expose to the host machine
+      - ${HOST_PORT}:3000
+    volumes:
+      - data:/app/data
+    networks:
+      - wren-network
+    depends_on:
+      - wren-ai-service
+      - wren-engine
+  api-bridge:
+    # image: mckinsey-sai-genai-docker-local.jfrog.io/sai-api-bridge:latest
+    image: api-bridge-service-2:latest # * For docker
+    restart: on-failure
+    platform: ${PLATFORM}
+    environment:
+      # US
+      US_SF_USERNAME: ${US_SF_USERNAME}
+      US_SF_PASSWORD: ${US_SF_PASSWORD}
+      US_SF_ACCOUNT: ${US_SF_ACCOUNT}
+      US_SF_WAREHOUSE: ${US_SF_WAREHOUSE}
+      US_SF_DATABASE: ${US_SF_DATABASE}
+      US_SF_ROLE: ${US_SF_ROLE}
+      SF_USERNAME_519f6dbf: ${US_SF_USERNAME}
+      SF_PASSWORD_519f6dbf: ${US_SF_PASSWORD}
+      SF_ACCOUNT_519f6dbf: ${US_SF_ACCOUNT}
+      SF_WAREHOUSE_519f6dbf: ${US_SF_WAREHOUSE}
+      SF_DATABASE_519f6dbf: ${US_SF_DATABASE}
+      SF_ROLE_519f6dbf: ${US_SF_ROLE}
+      SF_USERNAME_048ee4ca: ${SF_USERNAME_048ee4ca}
+      SF_PASSWORD_048ee4ca: ${SF_PASSWORD_048ee4ca}
+      SF_ACCOUNT_048ee4ca: ${SF_ACCOUNT_048ee4ca}
+      SF_WAREHOUSE_048ee4ca: ${SF_WAREHOUSE_048ee4ca}
+      SF_DATABASE_048ee4ca: ${SF_DATABASE_048ee4ca}
+      SF_ROLE_048ee4ca: ${SF_ROLE_048ee4ca}
+      EU_SF_USERNAME: ${EU_SF_USERNAME}
+      EU_SF_PASSWORD: ${EU_SF_PASSWORD}
+      EU_SF_ACCOUNT: ${EU_SF_ACCOUNT}
+      EU_SF_WAREHOUSE: ${EU_SF_WAREHOUSE}
+      EU_SF_DATABASE: ${EU_SF_DATABASE}
+      EU_SF_ROLE: ${EU_SF_ROLE}
+      SNOWFLAKE_FETCH_SIZE: ${SNOWFLAKE_FETCH_SIZE}
+      EXTERNAL_API_URL: ${EXTERNAL_API_URL}
+      ALGORITHM: ${ALGORITHM}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN} 
+      AZML_SECRET_KEY: ${AZML_SECRET_KEY}
+      AZML_ALGORITHM: ${AZML_ALGORITHM}
+      SNOWFLAKE_ROLE: ${SNOWFLAKE_ROLE}
+    ports:
+      # HOST_PORT is the port you want to expose to the host machine
+      - ${API_BRIDGE_PORT}:8088
+    volumes:
+      - data:/app/data
+    networks:
+      - wren-network
+    depends_on:
+      - wren-ai-service
+  wren-ai-service:
+  # image: 1dbb8bfafe72
+  # image: mckinsey-sai-genai-docker-local.jfrog.io/sai-ai-service:latest
+    image: ai-service-2:latest # * For docker
+    # pull_policy: never
+    restart: on-failure
+    platform: ${PLATFORM}
+    expose:
+      - ${WREN_AI_SERVICE_PORT}
+    ports:
+      - ${AI_SERVICE_FORWARD_PORT}:${WREN_AI_SERVICE_PORT}
+    environment:
+      WREN_AI_SERVICE_PORT: ${WREN_AI_SERVICE_PORT}
+      WREN_UI_PORT: ${WREN_UI_PORT}
+      QDRANT_HOST: ${QDRANT_HOST}
+      WREN_UI_ENDPOINT: http://wren-ui:${WREN_UI_PORT}
+      LLM_OPENAI_API_KEY: ${LLM_OPENAI_API_KEY}
+      EMBEDDER_OPENAI_API_KEY: ${EMBEDDER_OPENAI_API_KEY}
+      LLM_AZURE_OPENAI_API_KEY: ${LLM_AZURE_OPENAI_API_KEY}
+      EMBEDDER_AZURE_OPENAI_API_KEY: ${EMBEDDER_AZURE_OPENAI_API_KEY}
+      QDRANT_API_KEY: ${QDRANT_API_KEY}
+      SHOULD_FORCE_DEPLOY: ${SHOULD_FORCE_DEPLOY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      OPENAI_API_VERSION: ${OPENAI_API_VERSION}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+      DATABASE_URL: ${DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      MCKID_JWKS_URI: ${MCKID_JWKS_URI}
+      MCKID_EXPECTED_AUDIENCE: ${MCKID_EXPECTED_AUDIENCE}
+      MCKID_TOKEN_ISSUER: ${MCKID_TOKEN_ISSUER}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN} 
+      # AZML_ENDPOINT_SECRETS: ${AZML_ENDPOINT_SECRETS}
+      AZML_SECRET_KEY: ${AZML_SECRET_KEY}
+      AZML_ALGORITHM: ${AZML_ALGORITHM}
+      # sometimes the console won't show print messages,
+      # using PYTHONUNBUFFERED: 1 can fix this
+      PYTHONUNBUFFERED: 1
+      CONFIG_PATH: /app/data/config.yaml
+      ENABLE_CACHE: ${ENABLE_CACHE}
+      REDIS_HOSTNAME: ${REDIS_HOSTNAME}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - ${PROJECT_DIR}/config.yaml:/app/data/config.yaml
+    networks:
+      - wren-network
+    depends_on:
+      - qdrant
+  postgres:
+    image: postgres:latest # Adjust the version as needed
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: admin     # Replace with your username
+      POSTGRES_PASSWORD: admin # Replace with your password
+      POSTGRES_DB: sai_dev_db  # Replace with your database name
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+    shm_size: "4g"
+    networks:
+      - wren-network
+  ml-endpoint:
+    image: ml-endpoint
+    ports:
+      - "5001:5000"
+    volumes:
+      - data:/data
+    environment:
+      ENV_TYPE: ${ENV_TYPE}
+      LOCAL_DB_MODE: ${LOCAL_DB_MODE}
+      AWS_DATABASE_ACCESS: ${AWS_DATABASE_ACCESS}
+      LOCAL_MODEL_MODE: ${LOCAL_MODEL_MODE}
+      APP_DIR: ${APP_DIR}
+      OPENAI_API_VERSION: ${OPENAI_API_VERSION}
+      VISION_KEY: ${VISION_KEY}
+      LLM_OPENAI_API_KEY: ${LLM_OPENAI_API_KEY}
+      EMBEDDER_OPENAI_API_KEY: ${EMBEDDER_OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      ATLAS_TENANT_IDS: ${ATLAS_TENANT_IDS}
+      PGUSER: ${PGUSER}
+      PGPASSWORD: ${PGPASSWORD},
+      PGHOST: ${PGHOST},
+      PGPORT: ${PGPORT},
+      PGDATABASE: ${PGDATABASE}
+      # US
+      US_SF_USERNAME: ${US_SF_USERNAME}
+      US_SF_PASSWORD: ${US_SF_PASSWORD}
+      US_SF_ACCOUNT: ${US_SF_ACCOUNT}
+      US_SF_WAREHOUSE: ${US_SF_WAREHOUSE}
+      US_SF_DATABASE: ${US_SF_DATABASE}
+      US_SF_ROLE: ${US_SF_ROLE}
+      EU_SF_USERNAME: ${EU_SF_USERNAME}
+      EU_SF_PASSWORD: ${EU_SF_PASSWORD}
+      EU_SF_ACCOUNT: ${EU_SF_ACCOUNT}
+      EU_SF_WAREHOUSE: ${EU_SF_WAREHOUSE}
+      EU_SF_DATABASE: ${EU_SF_DATABASE}
+      EU_SF_ROLE: ${EU_SF_ROLE}
+      SNOWFLAKE_FETCH_SIZE: ${SNOWFLAKE_FETCH_SIZE}
+      ENABLE_CACHE: ${ENABLE_CACHE}
+      REDIS_HOSTNAME: ${REDIS_HOSTNAME}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    networks:
+      - wren-network
+    command: poetry run uvicorn app:app
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis-stack.conf:/redis-stack.conf
+    command: ["redis-server", "/redis-stack.conf"]
+    environment:
+      REDIS_PASSWORD: yourpassword
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "yourpassword", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wren-network
+  
+  chat-service-master:
+    # build:
+    #   context: ./bridge
+    image: chat-service:latest # * For docker
+    container_name: chat-service-master
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - LLM_OPENAI_API_KEY=${LLM_OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+      - METADATA_LOCATION=${METADATA_LOCATION}
+      - API_BRIDGE_HOSTNAME=${API_BRIDGE_HOSTNAME}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - EXTERNAL_API_URL=${EXTERNAL_API_URL}
+      - US_SF_USERNAME=${US_SF_USERNAME}
+      - US_SF_PASSWORD=${US_SF_PASSWORD}
+      - US_SF_ACCOUNT=${US_SF_ACCOUNT}
+      - US_SF_WAREHOUSE=${US_SF_WAREHOUSE}
+      - US_SF_DATABASE=${US_SF_DATABASE}
+      - US_SF_ROLE=${US_SF_ROLE}
+      - EU_SF_USERNAME=${EU_SF_USERNAME}
+      - EU_SF_PASSWORD=${EU_SF_PASSWORD}
+      - EU_SF_ACCOUNT=${EU_SF_ACCOUNT}
+      - EU_SF_WAREHOUSE=${EU_SF_WAREHOUSE}
+      - EU_SF_DATABASE=${EU_SF_DATABASE}
+      - EU_SF_ROLE=${EU_SF_ROLE}
+    depends_on:
+      - redis
+    restart: always
+    networks:
+      - wren-network
+
+  chat-service-worker:
+    # build:
+    #   context: ./bridge
+    image: chat-service:latest # * For docker
+    command: /app/.venv/bin/python -m celery -A src.celery_tasks.tasks worker --loglevel=info
+    container_name: chat-service-worker
+    environment:
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - LLM_OPENAI_API_KEY=${LLM_OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+      - METADATA_LOCATION=${METADATA_LOCATION}
+      - API_BRIDGE_HOSTNAME=${API_BRIDGE_HOSTNAME}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - EXTERNAL_API_URL=${EXTERNAL_API_URL}
+      - US_SF_USERNAME=${US_SF_USERNAME}
+      - US_SF_PASSWORD=${US_SF_PASSWORD}
+      - US_SF_ACCOUNT=${US_SF_ACCOUNT}
+      - US_SF_WAREHOUSE=${US_SF_WAREHOUSE}
+      - US_SF_DATABASE=${US_SF_DATABASE}
+      - US_SF_ROLE=${US_SF_ROLE}
+      - EU_SF_USERNAME=${EU_SF_USERNAME}
+      - EU_SF_PASSWORD=${EU_SF_PASSWORD}
+      - EU_SF_ACCOUNT=${EU_SF_ACCOUNT}
+      - EU_SF_WAREHOUSE=${EU_SF_WAREHOUSE}
+      - EU_SF_DATABASE=${EU_SF_DATABASE}
+      - EU_SF_ROLE=${EU_SF_ROLE}
+      - EU_SF_SCHEMA=${EU_SF_SCHEMA}
+      - EU_SF_TABLE=${EU_SF_TABLE}
+    depends_on:
+      - redis
+    restart: always
+    networks:
+      - wren-network

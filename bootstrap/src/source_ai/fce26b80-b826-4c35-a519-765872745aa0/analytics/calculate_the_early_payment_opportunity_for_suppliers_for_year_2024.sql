@@ -1,0 +1,89 @@
+-- WITH DiffPayment AS (
+-- SELECT 
+--     YEAR(TO_DATE(vdp.DIM_DATE, 'YYYYMMDD')) AS Year,
+--     sup.TXT_CONS_SUPPLIER_L1,
+-- 	ip.MES_DIFF_EARLY_PAYMENT,
+-- 	SUM(ip.MES_SPEND_PAID_CURR_1) AS Total_Spend,
+-- 	CASE WHEN COUNT(MES_INTEGER) > 0
+-- 	THEN SUM(MES_DIFF_EARLY_PAYMENT) / COUNT(MES_INTEGER) 
+-- 	ELSE 0 END AS Diff_Early_Payment
+-- FROM 
+--     data.VT_C_FACT_INVOICEPOSITION_PAYMENT as ip
+-- 	JOIN data.VT_C_DIM_Supplier as sup ON sup.DIM_SUPPLIER=ip.dim_supplier
+-- 	JOIN data.VT_DIM_PaymentTerm AS pt ON pt.DIM_PAYMENT_TERM = ip.DIM_PAYMENT_TERM
+--     JOIN data.VT_C_DIM_ValueType AS vt ON vt.DIM_VALUE_TYPE = ip.DIM_VALUE_TYPE
+--     JOIN data.VT_DIM_Period vdp ON vdp.DIM_DATE = ip.DIM_DATE
+--     WHERE vt.DIM_VALUE_TYPE = 'P' AND lower(pt.TXT_PAYMENT_TERM_TYPE) = lower('Net Payment')
+--     AND YEAR(TO_DATE(vdp.DIM_DATE, 'YYYYMMDD')) = '2024'
+--     GROUP BY 
+-- 		sup.TXT_CONS_SUPPLIER_L1,
+-- 		ip.MES_DIFF_EARLY_PAYMENT,
+--         YEAR(TO_DATE(vdp.DIM_DATE, 'YYYYMMDD'))
+-- 		)
+-- SELECT Year,
+--     dp.TXT_CONS_SUPPLIER_L1 as supplier,
+-- 	MES_DIFF_EARLY_PAYMENT AS Diff_Early_Payment,
+-- 	Total_Spend,
+-- 	CASE WHEN dp.MES_DIFF_EARLY_PAYMENT < -3 
+-- 	THEN (dp.Total_Spend * dp.Diff_Early_Payment * -1) / 365
+-- 	ELSE 0
+-- 	END AS Early_Payment
+-- FROM DiffPayment as dp
+-- ORDER BY supplier asc, Early_Payment DESC
+
+
+WITH DIFFPAYMENT AS (
+    SELECT
+        YEAR(TO_DATE(VDP.DIM_DATE, 'YYYYMMDD')) AS YEAR,
+        SOUR.TXT_CATEGORY_LEVEL_2 AS CATEGORY,
+        SC.TXT_COUNTRY,
+        G.TXT_PLANT, 
+        C.TXT_MATERIAL,
+        SUP.TXT_CONS_SUPPLIER_L1 AS SUPPLIER,
+        PT.txt_cons_payment_term as PAYMENT_TERM_GROUP,
+        NULLIF(COUNT(MES_INTEGER), 0) AS MES_COUNT,
+        SUM(IP.MES_DIFF_EARLY_PAYMENT) AS MES_DIFF_EARLY_PAYMENT,
+        SUM(IP.MES_SPEND_PAID_CURR_1) AS TOTAL_SPEND,
+        SUM(IP.mes_diff_invoice_payment_date_weighted) AS Mes_diff_invoice_payment_date_weighted,
+        SUM(MES_DIFF_EARLY_PAYMENT) / NULLIF(COUNT(MES_INTEGER), 0) AS Diff_Early_Payment,
+        10 as WACC,
+        com.txt_level_4
+    FROM
+        DATA.VT_C_FACT_INVOICEPOSITION_PAYMENT AS IP
+        LEFT OUTER JOIN DATA.VT_C_DIM_SUPPLIER AS SUP ON SUP.DIM_SUPPLIER = IP.DIM_SUPPLIER
+        LEFT OUTER JOIN DATA.VT_C_DIM_MATERIAL AS C ON C.DIM_MATERIAL = IP.DIM_MATERIAL
+        LEFT OUTER JOIN DATA.VT_C_DIM_SOURCINGTREE_TECHCME AS SOUR ON SOUR.DIM_SOURCING_TREE = IP.DIM_SOURCING_TREE
+        LEFT OUTER JOIN DATA.VT_DIM_PERIOD VDP ON VDP.DIM_DATE = IP.DIM_DATE
+        LEFT OUTER JOIN DATA.VT_DIM_SupplierCountry SC ON IP.DIM_COUNTRY=SC.DIM_COUNTRY
+        LEFT OUTER JOIN DATA.VT_DIM_COMPANY COM on IP.DIM_COMPANY=COM.DIM_COMPANY
+        LEFT OUTER JOIN data.VT_DIM_PLANT G ON IP.DIM_PLANT = G.DIM_PLANT
+        LEFT OUTER JOIN  DATA.VT_DIM_PAYMENTTERM AS PT ON PT.DIM_PAYMENT_TERM = IP.DIM_PAYMENT_TERM
+    WHERE
+        IP.DIM_VALUE_TYPE = 'P'
+        AND LOWER(PT.TXT_PAYMENT_TERM_TYPE) = LOWER('NET PAYMENT')
+        AND G.TXT_PLANT <> '#'
+        AND YEAR(TO_DATE(VDP.DIM_DATE, 'YYYYMMDD')) = '2024'
+    GROUP BY
+        SUP.TXT_CONS_SUPPLIER_L1,
+        YEAR(TO_DATE(VDP.DIM_DATE, 'YYYYMMDD')),
+        SOUR.TXT_CATEGORY_LEVEL_2,
+        sc.TXT_COUNTRY,
+        g.TXT_PLANT,
+        c.TXT_MATERIAL,
+        pt.txt_cons_payment_term,
+        com.txt_level_4     
+)
+SELECT Year,
+    dp.SUPPLIER as supplier,
+	SUM(MES_DIFF_EARLY_PAYMENT) AS Diff_Early_Payment,
+	SUM(Total_Spend) AS Total_Spend,
+	SUM(ROUND(
+        CASE
+            WHEN DP.MES_DIFF_EARLY_PAYMENT < -3 THEN (DP.TOTAL_SPEND * DP.DIFF_EARLY_PAYMENT * 0.1 * -1) / 365
+            ELSE 0
+        END,
+        2
+    ) )AS EARLY_PAYMENT
+FROM DiffPayment as dp
+GROUP BY Year, dp.SUPPLIER
+ORDER BY supplier asc, Early_Payment DESC

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  node-app:
+    build: .
+    ports:
+      - "3003:3003"  # Maps container's port 3002 to host's port 3002
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

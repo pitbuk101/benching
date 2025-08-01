@@ -1,0 +1,283 @@
+### TASK ###
+Given a user query that is ambiguous in nature, your task is to interpret the query in various plausible ways and
+generate one SQL statement for ANSI SQL that best potentially answer user's query.
+
+### MANDATORY JOINING RULES ###
+1. ALWAYS USE ID type of colums to join tables.
+2. DO NOT USE TEXT columns to join tables unless specified.
+3. ALWAYS USE JOINS MENTIONED IN `DATABASE SCHEMA` to join tables.
+4. REFER `SAMPLES` for the correct join conditions.
+
+### MANDATORY DIVISION RULES ###
+1. When dividing any two columns in sql, ALWAYS put the denominator greater than 0 in where clause to avoid division by zero error.
+
+### MANDATORY AGGREGRATION RULES ###
+1. Try to AGGREGATE on CATEGORICAL AND TIME BASED columns .
+2.  IF AGGREGATION is done the columns should be present in the final output.
+    - For example, **supplier**, **material**, **year**, **country**, **category**, **quarter**, **plant** etc.
+    - If a time dimension (like **year**, **quarter**) is mentioned, make sure it must be included in both the `WHERE` clause and `SELECT` clause to ensure accurate time-related data is returned.
+    - When aggregating, always **GROUP BY** the relevant hierarchical levels (e.g., supplier, material, year, quarter, month, country, category, plant) to ensure results are grouped correctly.
+3. DO NOT USE COUNT(1) or COUNT(*) in the SQL queries. Instead use COUNT(COLUMN_NAME) to avoid performance issues.
+4. AVOID USING LAG and LEAD functions in the SQL queries unless specified.
+
+### MANDATORY TIME HANDLING RULES ### 
+1. Extract last nth date from current date : DATEADD(DAY, -n, CURRENT_DATE)
+2. Extract year from timestamp: YEAR(CURRENT_TIMESTAMP)
+3. Extract current year:  YEAR(CURRENT_DATE)
+4. Extract previous quarter:  QUARTER(DATEADD(MONTH, -3, CURRENT_DATE))
+5. Extract current date and time: CURRENT_TIMESTAMP
+6. Extract current date: CURRENT_DATE
+7. Convert a given date column to date format: TO_DATE(DIM_DATE, 'YYYYMMDD')
+8. Extract year from a give column: YEAR(TO_DATE(DIM_DATE, 'YYYYMMDD'))
+9. Extract month from a give column: MONTH(TO_DATE(DIM_DATE, 'YYYYMMDD'))
+10. Extract quarter from a give column: QUARTER(TO_DATE(DIM_DATE, 'YYYYMMDD'))
+11. ALWAYS USE DIM_DATE column to filter date, year, month and quater.
+12. DO NOT PICK TXT_MONTH in WHERE CLAUSE to filter months.
+    For example 
+        "TXT_MONTH" IN ('October', 'November', 'December')
+13. DO NOT USE DATE_TRUNC function to filter dates.
+14. Ensure correct time-based values in output:
+    - If the user asks about data for the **current year** or **quarter**, return that as part of the result (e.g., `YEAR`, `QUARTER` or `MONTH` in the `SELECT` statement).
+    - When filtering data by time, ensure that **time dimensions** like `YEAR`, `QUARTER`, or `MONTH` are used properly in both the **`WHERE` clause** and **final output**.
+
+### DIM_DATE SAMPLE ###
+Given below is a sample of DIM_DATE table and values lying inside the table.
+DIM_DATE,TXT_DATE,DIM_MONTH,TXT_MONTH,DIM_QUARTER,TXT_QUARTER,DIM_YEAR,TXT_YEAR,DIM_DAY_OF_WEEK,TXT_DAY_OF_WEEK,TXT_CALENDAR_WEEK,TXT_CALENDAR_YEAR,MONTH_NUMBER,MONTH_NAME,MONTH_NAME_ABB,QUARTER_PAD,QUARTER_NUMBER,DATE_DATE,TXT_WEEK_NUMBER,TXT_DAY_NUMBER,MONTH_OFFSET,YEAR_OFFSET,QUARTER_OFFSET,FLG_TIME_INTELLIGENCE
+20210313,2021-03-13,202103,2021/03,20211,2021 Q1,2021,2021,6,Saturday,2021/010,2021,3,March,Mar,Q01,1.00000,2021-03-13,10,13,null,null,null,0
+20210427,2021-04-27,202104,2021/04,20212,2021 Q2,2021,2021,2,Tuesday,2021/017,2021,4,April,Apr,Q02,2.00000,2021-04-27,17,27,null,null,null,0
+20210621,2021-06-21,202106,2021/06,20212,2021 Q2,2021,2021,1,Monday,2021/025,2021,6,June,Jun,Q02,2.00000,2021-06-21,25,21,null,null,null,0
+20210102,2021-01-02,202101,2021/01,20211,2021 Q1,2021,2021,6,Saturday,2020/053,2020,1,January,Jan,Q01,1.00000,2021-01-02,53,2,null,null,null,0
+20210428,2021-04-28,202104,2021/04,20212,2021 Q2,2021,2021,3,Wednesday,2021/017,2021,4,April,Apr,Q02,2.00000,2021-04-28,17,28,null,null,null,0 
+
+### MANDATORY RULES FOR WHERE CLAUSE ###
+1. Never Use DIM_* for searching TEXTUAL DATA :
+    Example:
+        1. Searching for `PLANT` name, use column `TXT_PLANT` in `VT_DIM_PLANT` table.
+        2. Searching for `SUPPLIER` name, use column 'TXT_SUPPLIER' in `VT_C_DIM_SUPPLIER` table.
+        3. Searching for `MATERIAL` name, use column `TXT_MATERIAL` in `VT_C_DIM_MATERIAL` table.
+        4. Searching for `COUNTRY` name, use column `TXT_COUNTRY` in `VT_C_DIM_SUPPLIERCOUNTRY` table. 
+
+### MANDATORY RULES FOR PICKING TABLES ###
+1. ALWAYS USE table 'T_C_LPP' for questions which have the following keywords 
+    1. LPP
+    2. Low Price Procurement
+    3. Linear Price Performance
+
+2. ALWAYS USE table 'T_C_PRICE_ARBITRAGE' for questions which have the following keywords
+    1. `RATE HARMONIZATION`
+    2. `RATE HARMONIZATION OPPORTUNITY`
+    3. `PRICE ARBITRAGE`
+    4. `PRICE ARBITRAGE OPPORTUNITY`
+    5. `PRICE HARMONIZATION`
+
+3. ALWAYS USE table 'T_C_PARAMETRIC_COST_MODELLING' for questions which have the following keywords
+    1. `PCM`
+    2. `PARAMETRIC COST MODELLING`
+    3. `CLEANSHEET OPPORTUNITY`
+    4. `PCM OPPORTUNITY`
+    5. `PARAMETRIC COST MODELLING OPPORTUNITY`
+    
+4. ALWAYS USE table 'SUPPLIER_NEWS' for questions which have the following keywords
+    1. `SUPPLIER NEWS`
+    2. `NEWS FOR SUPPLIER`
+    3. `NEWS ON SUPPLIER`
+    4. `SUPPLIER LATEST NEWS`
+    5. `SUPPLIER INDUSTRY NEWS`
+    6. `SUPPLIER MARKET UPDATES`
+    7. `SUPPLIER TRENDS`
+    8. `SUPPLIER ANNOUNCEMENTS`
+    9. `SUPPLIER PRESS RELEASE`
+    10. `SUPPLIER MEDIA COVERAGE`
+    11. `SUPPLIER BUSINESS NEWS`
+    12. `SUPPLIER ARTICLES`
+    13. `SUPPLIER REPORTS`
+    14. `SUPPLIER PUBLICATION`
+    15. `SUPPLIER EVENT NEWS`
+    16. `SUPPLIER LATEST UPDATES`
+    17. `SUPPLIER PARTNERSHIP NEWS`
+    18. `SUPPLIER EXPANSION NEWS`
+    19. `SUPPLIER ACQUISITION NEWS`
+
+5. ALWAYS USE table 'VT_C_FACT_INVOICEPOSITION_MULTIPLIED' for questions which have the following keywords 
+    1. `TAIL SPENDS`
+    2. `KEY SPENDS`
+    3. `SPENDS`
+    4. `SPEND`
+    5. `TOTAL SPEND`
+    6. `TOTAL SPENDS`
+    7. `PAYMENT TERMS`
+
+6. ALWAYS USE table 'VT_DIM_PLANT' for getting information about plant.
+
+### HIERARCHICAL DATA HANDLING RULES ###
+1. Spends and Supplier Data:
+    - If the query involves **CATEGORY**, **COUNTRY**, **COMPANY**, **PLANT**, **SUPPLIER** or **MATERIAL**, return the data grouped by:
+      - **CATEGORY → COMPANY → COUNTRY → PLANT → SUPPLIER → INCOTERM → MATERIAL → YEAR (or relevant time dimension)**.
+    - **Aggregation**: Always use appropriate aggregation functions (e.g., `SUM(quantity)`, `SUM(price)`, `SUM(savings)`) to avoid duplication and provide meaningful summaries. For example:
+      - **For savings opportunities**: Return results aggregated by **YEAR**, **CATEGORY**, **SUPPLIER** and **MATERIAL**, and if the user asks for a **total** or **sum**, ensure that you use the `SUM()` function.
+      - If the query includes time-based filters (like the **YEAR**, **QUARTER**, etc.), ensure these are **grouped by time dimension** (e.g., year or quarter) to reflect trends over time.
+
+2. Market Data:
+    - **CATEGORY → RAW MATERIAL (COMPONENT) **: When a user asks for data involving **market trends**, **raw material**, the model must structure the data as:
+      - **CATEGORY → RAW MATERIAL (COMPONENT) **.
+
+3. Ensure the Query Includes All Hierarchical Levels:
+    - **Avoid Duplication**: When a query is related to hierarchical entities (e.g., **COMPANY**, **COUNTRY**, **PLANT**, **SUPPLIER**, **MATERIAL**), ensure the **grouping** or **aggregation** is done at each level to prevent repeated results.
+
+{% if db_schema %}
+### DATABASE SCHEMA ###
+{{ db_schema }}
+{% endif  %}
+
+
+{% if exclude %}
+### EXCLUDED STATEMETS ###
+Ensure that the following excluded statements are not used in the generated queries to maintain variety and avoid repetition.
+{% for doc in exclude %}
+    {{ doc.statement }}
+{% endfor %}
+{% endif %}
+
+### ALERT ###
+- COLUMN ALIAS NAMES Should be in CAPITAL CASE and without spaces.
+- ONLY USE SELECT statements, NO DELETE, UPDATE OR INSERT etc. statements that might change the data in the database.
+- ONLY USE the tables and columns mentioned in the database schema.
+- ONLY USE "*" if the user query asks for all the columns of a table.
+- ONLY CHOOSE columns belong to the tables mentioned in the database schema.
+- ALWAYS USE "JOIN" if you choose columns from multiple tables!
+- ALWAYS CREATE QUERY WITH RESPECT TO CURRENT YEAR Unless specifically mentioned in the prompt.
+- ALWAYS PREFER DIM_DATE over YEAR_OFF or MONTH_OFF or QUARTER_OFF.
+- ALWAYS USE "WHERE" like "WHERE LOWER(<column_name>) = LOWER(<value>)" to filter textual column.
+- ALWAYS QUALIFY column names with their table name or table alias to avoid ambiguity (e.g., orders.OrderId, o.OrderId).
+- YOU MUST USE "lower(<table_name>.<column_name>) like lower(<value>)" function or "lower(<table_name>.<column_name>) = lower(<value>)" function for case-insensitive comparison!
+    - Use "lower(<table_name>.<column_name>) LIKE lower(<value>)" when:
+        - The user requests a pattern or partial match.
+        - The value is not specific enough to be a single, exact value.
+        - Wildcards (%) are needed to capture the pattern.
+    - Use "lower(<table_name>.<column_name>) = lower(<value>)" when:
+        - The user requests an exact, specific value.
+        - There is no ambiguity or pattern in the value.
+- ALWAYS CAST the date/time related field to "TIMESTAMP WITH TIME ZONE" type when using them in the query
+    - example 1: CAST(properties_closedate AS TIMESTAMP WITH TIME ZONE)
+    - example 2: CAST('2024-11-09 00:00:00' AS TIMESTAMP WITH TIME ZONE)
+    - example 3: TO_DATE(DIM_DATE, 'YYYYMMDD') AS DIM_DATE
+- If the user asks for a specific date, please give the date range in SQL query
+    - example: "What is the total revenue for the month of 2024-11-01?"
+    - answer: "SELECT SUM(r.PriceSum) FROM Revenue r WHERE CAST(r.PurchaseTimestamp AS TIMESTAMP WITH TIME ZONE) >= CAST('2024-11-01 00:00:00' AS TIMESTAMP WITH TIME ZONE) AND CAST(r.PurchaseTimestamp AS TIMESTAMP WITH TIME ZONE) < CAST('2024-11-02 00:00:00' AS TIMESTAMP WITH TIME ZONE)"
+- ALWAYS ADD "timestamp" to the front of the timestamp literal, ex. "timestamp '2024-02-20 12:00:00'"
+- USE THE VIEW TO SIMPLIFY THE QUERY.
+- DON'T MISUSE THE VIEW NAME. THE ACTUAL NAME IS FOLLOWING THE CREATE VIEW STATEMENT.
+- MUST USE the value of alias from the comment section of the corresponding table or column in the DATABASE SCHEMA section for the column/table alias.
+  - EXAMPLE
+    DATABASE SCHEMA
+    /* {"displayName":"_orders","description":"A model representing the orders data."} */
+    CREATE TABLE orders (
+      -- {"description":"A column that represents the timestamp when the order was approved.","alias":"_timestamp"}
+      ApprovedTimestamp TIMESTAMP
+    );
+
+    SQL
+    SELECT _orders.ApprovedTimestamp AS _timestamp FROM orders AS _orders;
+- DON'T USE '.' in column/table alias, replace '.' with '_' in column/table alias.
+- DON'T USE "FILTER(WHERE <condition>)" clause in the query.
+- DON'T USE "EXTRACT(EPOCH FROM <timestamp_column>)" clause in the query.
+- ONLY USE the following SQL functions if you need to when generating answers:
+  - Aggregation functions:
+    - AVG
+    - COUNT
+    - MAX
+    - MIN
+    - SUM
+    - ARRAY_AGG
+    - LISTAGG
+    - BOOL_OR
+  - Math functions:
+    - ABS
+    - CBRT
+    - CEIL
+    - EXP
+    - FLOOR
+    - LN
+    - ROUND
+    - SIGN
+    - GREATEST
+    - LEAST
+    - MOD
+    - POWER
+  - String functions:
+    - LENGTH
+    - REVERSE
+    - CHR
+    - CONCAT
+    - FORMAT
+    - LOWER
+    - LPAD
+    - LTRIM
+    - POSITION
+    - REPLACE
+    - RPAD
+    - RTRIM
+    - STRPOS
+    - SUBSTR
+    - SUBSTRING
+    - TRANSLATE
+    - TRIM
+    - UPPER
+  - Date and Time functions:
+    - CURRENT_DATE
+    - TO_DATE
+    - YEAR
+    - QUARTER
+    - MONTH
+    - CURRENT_TIMESTAMP
+    - DATEADD
+    - EXTRACT
+    - INTERVAL
+  - Operators:
+    - `+`
+    - `-`
+    - `*`
+    - `/`
+    - `||`
+    - `<`
+    - `>`
+    - `>=`
+    - `<=`
+    - `=`
+    - `<>`
+    - `!=`
+    
+{% if instructions %}
+{{ instructions }}
+{% endif %}
+
+
+{% if samples %}
+### QUERY GENERATION STEPS ###
+{{samples}}
+{% endif %}
+
+🚨 MANDATORY SQL QUERY GENERATION RULES
+1. Use the DATABASE SCHEMA to identify tables, columns, and their relationships.
+2. Follow the QUERY GENERATION STEPS precisely to derive business logic and generate the SQL query step-by-step.
+3. Apply all specified JOINING, DIVISION, and AGGREGATION RULES exactly as outlined.
+4. Do not assume joins. Only use joins explicitly defined in the QUERY GENERATION STEPS — these are business-specific and must be followed strictly.
+5. Ensure logical correctness. Any new logic must not break existing business rules or query logic.
+
+USER QUESTION: {{ query }}
+
+Current Time: {{ current_time }}
+
+### FINAL ANSWER FORMAT ###
+The final answer must be the JSON format like following:
+{
+    "results": [
+        {"sql": <SQL_QUERY_STRING>}
+    ]
+}
+
+Think Step by Step:
+1. Identify the key components of the user query, including the main subject (e.g., supplier, material) and the specific metrics or actions requested (e.g., "highest LPP").
+2. Map these components to the relevant tables and columns in the `DATABASE SCHEMA`.
+3. Construct the SQL query step by step, ensuring to follow the MANDATORY JOINING, DIVISION, and AGGREGATION RULES.
+4. Validate the final SQL query against the user query to ensure it accurately addresses the request.

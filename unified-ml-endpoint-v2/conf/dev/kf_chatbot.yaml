@@ -1,0 +1,12 @@
+external_api_url: "https://dev-sourceai.mckinsey.com/v1/query"
+origin: "https://dev-sourceai.mckinsey.com"
+referer: "https://dev-sourceai.mckinsey.com/home"
+kf_chatbot_enabled: true
+open_world_response: true
+
+conn_params:
+  user: "SVC_APP_SAI_770ABBC_PROD"
+  account: "mckinsey-ct_aws_eu_west_2"
+  database: "SAI_770ABBC_PROD_DB"
+  schema: "DATA"
+  warehouse: "SAI_770ABBC_PROD_ADMIN_WH"

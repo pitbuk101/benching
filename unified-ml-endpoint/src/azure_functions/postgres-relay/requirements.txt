@@ -1,0 +1,26 @@
+# DO NOT include azure-functions-worker in this file
+# The Python Worker is managed by Azure Functions platform
+# Manually managing azure-functions-worker may cause unexpected issues
+
+azure-common==1.1.28
+azureml-core==1.54.0
+azure-functions==1.17.0
+azure-identity==1.15.0
+azure-keyvault-secrets==4.7.0
+brotlipy==0.7.0
+greenlet==3.0.1
+isodate==0.6.1
+msal==1.25.0
+msal-extensions==1.0.0
+pgvector==0.2.4
+portalocker==2.8.2
+psycopg2-binary==2.9.9
+PyJWT==2.8.0
+python-dateutil==2.8.2
+pytz==2023.3.post1
+PyYAML==6.0.1
+SQLAlchemy==2.0.23
+typing_extensions==4.8.0
+tzdata==2023.3
+marshmallow==3.23.1
+rapidfuzz=3.12.1

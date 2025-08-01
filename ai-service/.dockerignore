@@ -1,0 +1,6 @@
+*
+!src
+!entrypoint.sh
+!pyproject.toml
+!config.yaml
+src/eval

@@ -1,0 +1,98 @@
+{
+  "Supplier": null,
+  "Region": null,
+  "Contract Digest": {
+    "Parties involved": null,
+    "Scope of work": null,
+    "Payment terms": null,
+    "Termination clause": null
+  },
+  "Payment terms": {
+    "domestic": null,
+    "export": null
+  },
+  "Supplier termination (convenience) period": null,
+  "Buyer termination (convenience) period": null,
+  "Buyer termination (cause) period": null,
+  "Prices": {
+    "unit": null,
+    "lump sum": null,
+    "item-level": null,
+    "aggregate-level": null,
+    "discount conditions": null
+  },
+  "SKUs": [
+    {
+      "product ID": "",
+      "description": "",
+      "unit_price": null,
+      "quantity per SKU": null
+    }
+  ],
+  "Specific terms agreed": null,
+  "Incoterms/shipping": null,
+  "Payment/invoicing terms": {
+    "Invoice requirements": [],
+    "Invoice submission": null
+  },
+  "Insurance": {
+    "coverage": [
+      {
+        "type": "",
+        "sum_insured": "",
+        "due_date": ""
+      }
+    ],
+    "types": []
+  },
+  "Jurisdiction/compliance": null,
+  "Vendor name and address/region": {
+    "name": null,
+    "address": null
+  },
+  "Title for the contract": null,
+  "Volume commitment": null,
+  "Contract start date": null,
+  "Contract expiry date": null,
+  "Contract duration": null,
+  "Renewal clause and notice period": {
+    "Renewal Clause": "",
+    "Notice period": null
+  },
+  "Performance penalties": [
+    {
+      "condition": "",
+      "delivery": "",
+      "penality": ""
+    }
+  ],
+
+  "Pricing Value, Drivers & Commercial Sustainability": [
+    {
+      "Criteria": "Capped inflation adjustment",
+      "Underlying questions": "Is annual inflation adjustment defined in contract and capped at a low level?",
+      "Rationale for Assessment": ""
+    },
+    {
+      "Criteria": "Favorable payment terms",
+      "Underlying questions": "Does contract provide favorable payment terms for CLIENT?",
+      "Rationale for Assessment": ""
+    },
+    {
+      "Criteria": "Volume discounts and volume discount structure",
+      "Underlying questions": "Is volume discount structure specified with increasing discount levels to specific volume bands?",
+      "Rationale for Assessment": ""
+    },
+    {
+      "Criteria": "Decreasing unit prices",
+      "Underlying questions": "Does contract include specific language regarding unit price increases with volume increases?",
+      "Rationale for Assessment": ""
+    },
+    {
+      "Criteria": "Installed gain share mechanisms",
+      "Underlying questions": "Does contract include gain share agreements or any additional savings opportunities realized by VENDOR during contract term?",
+      "Rationale for Assessment": ""
+    }
+  ],
+  "Partnership & Contract Governance" : []
+}

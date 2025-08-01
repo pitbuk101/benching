@@ -1,0 +1,20 @@
+SELECT
+    NULLIF(c.TXT_MATERIAL, 'material') TXT_MATERIAL,
+    e.TXT_COUNTRY,
+    ROUND(CASE
+        WHEN SUM(a.MES_QUANTITY) > 0 THEN SUM(a.MES_SPEND_CURR_1) / SUM(a.MES_QUANTITY)
+        ELSE 0
+    END ,2)AS Price_Avg
+FROM
+    data.VT_C_FACT_INVOICEPOSITION_MULTIPLIED a
+JOIN
+    data.VT_DIM_Period b ON a.DIM_DATE = b.DIM_DATE
+JOIN
+    data.VT_C_DIM_Material c ON c.DIM_MATERIAL = a.DIM_MATERIAL
+JOIN
+    data.VT_DIM_SupplierCountry e ON e.dim_country = a.DIM_COUNTRY
+WHERE YEAR(TO_DATE(b.DIM_DATE, 'YYYYMMDD')) = '2023' and a.DIM_MATERIAL <> '-1'
+GROUP BY
+    c.TXT_MATERIAL,
+    e.TXT_COUNTRY
+ having SUM(a.MES_SPEND_CURR_1) > 0 and SUM(a.MES_QUANTITY) > 0
