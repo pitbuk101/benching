@@ -1,0 +1,12 @@
+services:
+  normalization-api:
+    build: .
+    container_name: normalization_api_service
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./normalise/src:/app/normalise/src
+      - ./normalise/data:/app/normalise/data
+      - ./normalise/logs:/app/normalise/logs
+    env_file:
+      - .env 
